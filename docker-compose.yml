@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ./front
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - mybank-net
+
+  backend:
+    build:
+      context: ./back
+    ports:
+      - "8000:9000"
+    environment:
+      DATABASE_URL: "mysql://mybank:secret@db:3306/mybank"
+      APP_ENV: dev
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./back:/var/www/html
+    networks:
+      - mybank-net
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: mybank
+      MYSQL_USER: mybank
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: rootsecret
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+    networks:
+      - mybank-net
+
+volumes:
+  db-data:
+
+networks:
+  mybank-net:
+    driver: bridge
