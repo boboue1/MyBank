@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,12 +17,17 @@ class RegisterController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserRepository $userRepository
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['email'], $data['password'], $data['firstName'], $data['lastName'])) {
             return $this->json(['error' => 'Missing fields'], 400);
+        }
+
+        if ($userRepository->findOneBy(['email' => $data['email']])) {
+            return $this->json(['error' => 'Email already in use'], 409);
         }
 
         $user = new User();
