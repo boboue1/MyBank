@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { getOperations, createOperation, deleteOperation } from '../api/operations'
 import { getCategories } from '../api/categories'
+import { useIsMobile } from '../hooks/useIsMobile'
+import OperationModal from '../components/OperationModal'
 import './DashboardPage.css'
 
 export default function DashboardPage() {
   const { user, logout } = useAuth()
-  const [operations, setOperations]   = useState([])
-  const [categories, setCategories]   = useState([])
-  const [showModal, setShowModal]     = useState(false)
-  const [form, setForm]               = useState({ label: '', amount: '', date: '', categoryId: '' })
-  const [error, setError]             = useState(null)
+  const navigate = useNavigate()
+  const isMobile = useIsMobile()
+  const [operations, setOperations] = useState([])
+  const [categories, setCategories] = useState([])
+  const [showModal, setShowModal]   = useState(false)
 
   useEffect(() => {
     getOperations().then((r) => setOperations(r.data))
@@ -28,7 +31,7 @@ export default function DashboardPage() {
     })
     .reduce((sum, o) => sum + parseFloat(o.amount), 0)
 
-  /* ── Chart data (dépenses par catégorie) ── */
+  /* ── Chart data ── */
   const byCategory = categories.map((cat) => {
     const total = operations
       .filter((o) => o.category.id === cat.id)
@@ -43,25 +46,10 @@ export default function DashboardPage() {
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5)
 
-  /* ── Form ── */
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
-
-  const handleAdd = async (e) => {
-    e.preventDefault()
-    setError(null)
-    try {
-      const res = await createOperation({
-        label:      form.label,
-        amount:     parseFloat(form.amount),
-        date:       form.date,
-        categoryId: parseInt(form.categoryId),
-      })
-      setOperations([...operations, res.data])
-      setShowModal(false)
-      setForm({ label: '', amount: '', date: '', categoryId: '' })
-    } catch {
-      setError("Erreur lors de l'ajout.")
-    }
+  /* ── Handlers ── */
+  const handleSave = async (data) => {
+    const res = await createOperation(data)
+    setOperations([...operations, res.data])
   }
 
   const handleDelete = async (id) => {
@@ -80,6 +68,9 @@ export default function DashboardPage() {
           <span>{user?.firstName} {user?.lastName}</span>
           <div className="avatar">{initials}</div>
           <button className="btn-logout" onClick={logout}>Déconnexion</button>
+          <div className="hamburger-mobile">
+            <span /><span /><span />
+          </div>
         </div>
       </nav>
 
@@ -167,53 +158,23 @@ export default function DashboardPage() {
           </div>
 
           {/* CTA */}
-          <button className="dash-cta" onClick={() => setShowModal(true)}>
-            + ADD OPERATION
+          <button
+            className="dash-cta"
+            onClick={() => isMobile ? navigate('/operations/new') : setShowModal(true)}
+          >
+            <span className="cta-full">+ ADD OPERATION</span>
+            <span className="cta-short">+ ADD</span>
           </button>
         </main>
       </div>
 
-      {/* ── Modal ajout opération ── */}
+      {/* ── Modal ── */}
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h2>Nouvelle opération</h2>
-            <input
-              name="label"
-              placeholder="Libellé"
-              value={form.label}
-              onChange={handleChange}
-              required
-            />
-            <input
-              name="amount"
-              type="number"
-              step="0.01"
-              placeholder="Montant (€)"
-              value={form.amount}
-              onChange={handleChange}
-              required
-            />
-            <input
-              name="date"
-              type="date"
-              value={form.date}
-              onChange={handleChange}
-              required
-            />
-            <select name="categoryId" value={form.categoryId} onChange={handleChange} required>
-              <option value="">-- Catégorie --</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>{c.title}</option>
-              ))}
-            </select>
-            {error && <p style={{ color: '#e53935', fontSize: '0.82rem' }}>{error}</p>}
-            <div className="modal-actions">
-              <button className="btn-cancel" onClick={() => setShowModal(false)}>Annuler</button>
-              <button className="btn-submit" onClick={handleAdd}>Ajouter →</button>
-            </div>
-          </div>
-        </div>
+        <OperationModal
+          categories={categories}
+          onSave={handleSave}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </div>
   )

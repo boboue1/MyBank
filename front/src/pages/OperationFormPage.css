@@ -1,0 +1,133 @@
+/* OperationFormPage.css — page dédiée mobile */
+
+.op-form-page {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-main);
+  background: var(--color-bg);
+}
+
+/* ── Header ── */
+.op-form-header {
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.op-form-back {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.op-form-header h1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: white;
+  margin: 0;
+}
+
+/* ── Form ── */
+.op-form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 20px;
+  flex: 1;
+}
+
+.op-form-body input,
+.op-form-body select {
+  width: 100%;
+  padding: 16px;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.op-form-body input:focus,
+.op-form-body select:focus {
+  border-color: var(--color-primary);
+}
+
+.op-form-body select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.op-form-error {
+  color: #e53935;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Actions ── */
+.op-form-actions {
+  padding: 0 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.op-form-submit {
+  width: 100%;
+  padding: 18px;
+  border: none;
+  background: var(--color-accent);
+  color: white;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.op-form-submit:hover {
+  background: color-mix(in srgb, var(--color-accent) 85%, black);
+}
+
+.op-form-cancel {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: none;
+  color: #aaa;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.op-form-cancel:hover {
+  color: var(--color-primary);
+}

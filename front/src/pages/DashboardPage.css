@@ -403,17 +403,67 @@
   background: color-mix(in srgb, var(--color-accent) 85%, black);
 }
 
+/* ── Hamburger mobile (caché sur desktop) ── */
+.hamburger-mobile {
+  display: none;
+}
+
+/* ── CTA texte responsive ── */
+.cta-short {
+  display: none;
+}
+
 /* ── Mobile ── */
 @media (max-width: 768px) {
+  /* Navbar */
+  .dash-navbar {
+    padding: 14px 16px;
+  }
+
+  .hamburger-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .hamburger-mobile span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 2px;
+  }
+
+  /* Sidebar cachée */
+  .dash-sidebar {
+    display: none;
+  }
+
+  /* Stat cards : 3 colonnes compactes */
   .stat-cards {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .stat-card {
-    border-right: none;
-    border-bottom: 1px solid #e8e8e8;
+    padding: 14px 10px;
   }
 
+  .stat-card .label {
+    font-size: 0.62rem;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-card .value {
+    font-size: 1rem;
+  }
+
+  .stat-card .sub {
+    display: none;
+  }
+
+  /* Chart + ops empilés */
   .dash-content {
     grid-template-columns: 1fr;
   }
@@ -423,11 +473,11 @@
     border-bottom: 1px solid #e8e8e8;
   }
 
-  .dash-sidebar {
-    width: 48px;
+  .panel-ops {
+    max-height: 300px;
+    overflow-y: auto;
   }
 
-  .dash-navbar {
-    padding: 14px 16px;
-  }
+  .cta-full { display: none; }
+  .cta-short { display: inline; }
 }
