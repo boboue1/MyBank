@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import AuthPage from './pages/AuthPage'
+import DashboardPage from './pages/DashboardPage'
 import PrivateRoute from './components/PrivateRoute'
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
         path="/dashboard"
         element={
           <PrivateRoute>
-            <div>Dashboard — à venir</div>
+            <DashboardPage />
           </PrivateRoute>
         }
       />
