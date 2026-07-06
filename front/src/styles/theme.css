@@ -1,0 +1,19 @@
+/* theme.css - Charte graphique MyBank */
+
+:root {
+  /* Couleurs */
+  --color-primary:      #156064; /* bleu canard — navbar, sidebar */
+  --color-primary-dark: #0d3d40; /* bleu canard foncé — header */
+  --color-accent:    #00C49A; /* vert menthe — boutons, liens actifs */
+  --color-highlight: #F8E16C; /* jaune doux  — badges, graphiques */
+  --color-bg:        #f9f9f7; /* fond général */
+  --color-text:      #333333; /* texte courant */
+
+  /* Typographie */
+  --font-main: 'Montserrat', sans-serif;
+
+  /* Breakpoints (référence — à utiliser dans les media queries) */
+  /* Mobile  : 375px  */
+  /* Tablette: 768px  */
+  /* Desktop : 1280px */
+}

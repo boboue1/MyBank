@@ -1,0 +1,263 @@
+/* AuthPage.css */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.auth-wrapper {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-main);
+  background: var(--color-bg);
+}
+
+/* ── Header ── */
+.auth-header {
+  background: var(--color-primary-dark);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+}
+
+.auth-header .logo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.auth-header .tagline {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+
+/* ── Body ── */
+.auth-body {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+
+/* ── Visual panel (left) ── */
+.auth-visual {
+  background: var(--color-primary);
+  color: white;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.auth-visual h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: white;
+}
+
+.auth-visual p {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+.auth-visual .features {
+  list-style: none;
+  text-align: left;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-visual .features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.auth-visual .features li::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ── Form panel (right) ── */
+.auth-form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+/* ── Tabs ── */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+
+.auth-tabs button {
+  flex: 1;
+  padding: 18px;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  text-transform: uppercase;
+}
+
+.auth-tabs button.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-accent);
+}
+
+/* ── Form ── */
+.auth-form {
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.auth-row {
+  display: flex;
+  gap: 12px;
+}
+
+.auth-row input {
+  flex: 1;
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: #fafafa;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-form input:focus {
+  border-color: var(--color-primary);
+  background: white;
+}
+
+.auth-form input.valid {
+  border-color: var(--color-accent);
+}
+
+.auth-form input.error {
+  border-color: #e53935;
+}
+
+/* ── Password hint ── */
+.auth-hint {
+  background: var(--color-highlight);
+  color: #555;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* ── Error message ── */
+.auth-error {
+  color: #e53935;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+/* ── CTA ── */
+.auth-cta {
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  padding: 18px;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.auth-cta:hover {
+  background: color-mix(in srgb, var(--color-accent) 85%, black);
+}
+
+.auth-forgot {
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #aaa;
+  padding: 16px;
+  cursor: pointer;
+  background: white;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.auth-forgot:hover {
+  color: var(--color-primary);
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .auth-header {
+    padding: 16px 20px;
+  }
+
+  .auth-body {
+    flex-direction: column;
+  }
+
+  .auth-visual {
+    padding: 32px 24px;
+  }
+
+  .auth-form {
+    padding: 24px 20px;
+  }
+
+  .auth-row {
+    flex-direction: column;
+  }
+}
