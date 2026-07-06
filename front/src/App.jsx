@@ -1,13 +1,21 @@
+<<<<<<< Updated upstream
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+=======
+import { Routes, Route, Navigate } from 'react-router-dom'
+import AuthPage from './pages/AuthPage'
+import DashboardPage from './pages/DashboardPage'
+import PrivateRoute from './components/PrivateRoute'
+>>>>>>> Stashed changes
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
+<<<<<<< Updated upstream
     <>
       <section id="center">
         <div className="hero">
@@ -116,6 +124,20 @@ function App() {
       <div className="ticks"></div>
       <section id="spacer"></section>
     </>
+=======
+    <Routes>
+      <Route path="/login" element={<AuthPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute>
+            <DashboardPage />
+          </PrivateRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+>>>>>>> Stashed changes
   )
 }
 

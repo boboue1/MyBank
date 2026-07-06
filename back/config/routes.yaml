@@ -1,6 +1,13 @@
+<<<<<<< Updated upstream
 # This file is the main entry point for defining routes in your application.
+=======
+>>>>>>> Stashed changes
 controllers:
     resource:
         path: ../src/Controller/
         namespace: App\Controller
+<<<<<<< Updated upstream
     type: attribute
+=======
+    type: attribute
+>>>>>>> Stashed changes

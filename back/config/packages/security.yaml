@@ -41,4 +41,8 @@ when@test:
                 algorithm: auto
                 cost: 4
                 time_cost: 3
+<<<<<<< Updated upstream
                 memory_cost: 10
+=======
+                memory_cost: 10
+>>>>>>> Stashed changes
