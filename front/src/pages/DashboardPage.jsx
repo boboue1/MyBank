@@ -5,6 +5,7 @@ import { getOperations, createOperation, deleteOperation } from '../api/operatio
 import { getCategories } from '../api/categories'
 import { useIsMobile } from '../hooks/useIsMobile'
 import OperationModal from '../components/OperationModal'
+import CategoryManager from '../components/CategoryManager'
 import './DashboardPage.css'
 
 export default function DashboardPage() {
@@ -68,7 +69,7 @@ export default function DashboardPage() {
           <span>{user?.firstName} {user?.lastName}</span>
           <div className="avatar">{initials}</div>
           <button className="btn-logout" onClick={logout}>Déconnexion</button>
-          <div className="hamburger-mobile">
+          <div className="hamburger-mobile" onClick={() => navigate('/categories')}>
             <span /><span /><span />
           </div>
         </div>
@@ -80,6 +81,7 @@ export default function DashboardPage() {
           <div className="hamburger">
             <span /><span /><span />
           </div>
+          <CategoryManager categories={categories} setCategories={setCategories} />
         </aside>
 
         {/* ── Main ── */}
@@ -130,7 +132,15 @@ export default function DashboardPage() {
 
             {/* Recent ops */}
             <div className="panel-ops">
-              <h3>5 dernières opérations</h3>
+              <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                5 dernières opérations
+                <button
+                  onClick={() => navigate('/operations')}
+                  style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, fontFamily: 'var(--font-main)' }}
+                >
+                  Voir tout →
+                </button>
+              </h3>
               {recentOps.length === 0 ? (
                 <p className="ops-empty">Aucune opération</p>
               ) : (

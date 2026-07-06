@@ -44,6 +44,24 @@ class CategoryController extends AbstractController
         ], 201);
     }
 
+    #[Route('/api/categories/{id}', name: 'api_categories_update', methods: ['PUT'])]
+    public function update(Category $category, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (empty($data['title'])) {
+            return $this->json(['error' => 'Title is required'], 400);
+        }
+
+        $category->setTitle($data['title']);
+        $em->flush();
+
+        return $this->json([
+            'id'    => $category->getId(),
+            'title' => $category->getTitle(),
+        ]);
+    }
+
     #[Route('/api/categories/{id}', name: 'api_categories_delete', methods: ['DELETE'])]
     public function delete(Category $category, EntityManagerInterface $em): JsonResponse
     {

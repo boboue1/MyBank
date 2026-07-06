@@ -1,18 +1,36 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { createOperation } from '../api/operations'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { createOperation, updateOperation } from '../api/operations'
 import { getCategories } from '../api/categories'
 import './OperationFormPage.css'
 
+const EMPTY = { label: '', amount: '', date: '', categoryId: '' }
+
 export default function OperationFormPage() {
-  const navigate = useNavigate()
+  const navigate  = useNavigate()
+  const location  = useLocation()
+  const existing  = location.state?.operation ?? null
+
   const [categories, setCategories] = useState([])
-  const [form, setForm] = useState({ label: '', amount: '', date: '', categoryId: '' })
-  const [error, setError] = useState(null)
+  const [form, setForm]             = useState(EMPTY)
+  const [error, setError]           = useState(null)
 
   useEffect(() => {
     getCategories().then((r) => setCategories(r.data))
   }, [])
+
+  useEffect(() => {
+    if (existing) {
+      setForm({
+        label:      existing.label,
+        amount:     existing.amount,
+        date:       existing.date,
+        categoryId: existing.category.id,
+      })
+    }
+  }, [existing])
+
+  const goBack = () => navigate(location.state?.from ?? '/dashboard')
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -23,14 +41,20 @@ export default function OperationFormPage() {
     if (!form.label || !form.amount || !form.date || !form.categoryId) {
       return setError('Tous les champs sont requis.')
     }
+    const payload = {
+      label:      form.label,
+      amount:     parseFloat(form.amount),
+      date:       form.date,
+      categoryId: parseInt(form.categoryId),
+    }
     try {
-      await createOperation({
-        label:      form.label,
-        amount:     parseFloat(form.amount),
-        date:       form.date,
-        categoryId: parseInt(form.categoryId),
-      })
-      navigate('/dashboard')
+      if (existing) {
+        await updateOperation(existing.id, payload)
+        navigate('/operations')
+      } else {
+        await createOperation(payload)
+        navigate('/dashboard')
+      }
     } catch {
       setError("Erreur lors de l'enregistrement.")
     }
@@ -39,8 +63,8 @@ export default function OperationFormPage() {
   return (
     <div className="op-form-page">
       <header className="op-form-header">
-        <button className="op-form-back" onClick={() => navigate('/dashboard')}>←</button>
-        <h1>Add Operation</h1>
+        <button className="op-form-back" onClick={goBack}>←</button>
+        <h1>{existing ? 'Edit Operation' : 'Add Operation'}</h1>
       </header>
 
       <div className="op-form-body">
@@ -76,9 +100,9 @@ export default function OperationFormPage() {
 
       <div className="op-form-actions">
         <button className="op-form-submit" onClick={handleSubmit}>
-          Save Operation →
+          {existing ? 'Update Operation →' : 'Save Operation →'}
         </button>
-        <button className="op-form-cancel" onClick={() => navigate('/dashboard')}>
+        <button className="op-form-cancel" onClick={goBack}>
           Cancel
         </button>
       </div>

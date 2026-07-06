@@ -1,0 +1,149 @@
+/* CategoryPage.css — page dédiée mobile */
+
+.cat-page {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-main);
+  background: var(--color-bg);
+}
+
+/* ── Header ── */
+.cat-page-header {
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 20px;
+}
+
+.cat-page-back {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.cat-page-header h1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: white;
+  margin: 0;
+}
+
+/* ── Form ajout ── */
+.cat-page-form {
+  padding: 20px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cat-page-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 8px;
+  font-family: var(--font-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: white;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.cat-page-input:focus {
+  border-color: var(--color-primary);
+}
+
+.cat-page-add-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-accent);
+  color: white;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.cat-page-add-btn:hover {
+  background: color-mix(in srgb, var(--color-accent) 85%, black);
+}
+
+/* ── Liste ── */
+.cat-page-list {
+  list-style: none;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.cat-page-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.cat-page-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.cat-page-edit-input {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: none;
+  border-bottom: 1.5px solid var(--color-primary);
+  background: transparent;
+  outline: none;
+  font-family: var(--font-main);
+  flex: 1;
+}
+
+.cat-page-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cat-page-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #bbb;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.cat-page-btn:hover {
+  color: var(--color-primary);
+}
