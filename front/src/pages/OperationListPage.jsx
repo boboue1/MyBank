@@ -5,6 +5,7 @@ import { getOperations, createOperation, updateOperation, deleteOperation } from
 import { getCategories } from '../api/categories'
 import { useIsMobile } from '../hooks/useIsMobile'
 import OperationModal from '../components/OperationModal'
+import Navbar from '../components/Navbar'
 import './OperationListPage.css'
 
 const PAGE_SIZE = 10
@@ -22,7 +23,7 @@ function formatDate(dateStr) {
 }
 
 export default function OperationListPage() {
-  const { user, logout } = useAuth()
+  useAuth()
   const navigate          = useNavigate()
   const isMobile          = useIsMobile()
 
@@ -97,35 +98,13 @@ export default function OperationListPage() {
     setEditing(null)
   }
 
-  const initials    = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : '?'
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1)
 
   return (
     <div className="op-list-page">
-
-      {/* ── Navbar ── */}
-      <nav className="op-list-navbar">
-        <span className="logo">MYBANK</span>
-        <div className="nav-right">
-          {/* desktop */}
-          <span className="nav-name">{user?.firstName} {user?.lastName}</span>
-          <div className="avatar">{initials}</div>
-          <button className="btn-logout" onClick={logout}>Déconnexion</button>
-          {/* mobile hamburger */}
-          <div className="hamburger-mobile" onClick={() => navigate('/dashboard')}>
-            <span /><span /><span />
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="op-list-body">
-
-        {/* ── Sidebar (desktop only) ── */}
-        <aside className="op-list-sidebar">
-          <div className="hamburger" onClick={() => navigate('/dashboard')}>
-            <span /><span /><span />
-          </div>
-        </aside>
 
         {/* ── Main ── */}
         <main className="op-list-main">

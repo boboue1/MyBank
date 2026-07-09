@@ -6,10 +6,11 @@ import { getCategories } from '../api/categories'
 import { useIsMobile } from '../hooks/useIsMobile'
 import OperationModal from '../components/OperationModal'
 import CategoryManager from '../components/CategoryManager'
+import Navbar from '../components/Navbar'
 import './DashboardPage.css'
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth()
+  useAuth()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
   const [operations, setOperations] = useState([])
@@ -58,22 +59,9 @@ export default function DashboardPage() {
     setOperations(operations.filter((o) => o.id !== id))
   }
 
-  const initials = user ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase() : '?'
-
   return (
     <div className="dashboard">
-      {/* ── Navbar ── */}
-      <nav className="dash-navbar">
-        <span className="logo">MYBANK</span>
-        <div className="nav-right">
-          <span>{user?.firstName} {user?.lastName}</span>
-          <div className="avatar">{initials}</div>
-          <button className="btn-logout" onClick={logout}>Déconnexion</button>
-          <div className="hamburger-mobile" onClick={() => navigate('/categories')}>
-            <span /><span /><span />
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="dash-body">
         {/* ── Sidebar ── */}
