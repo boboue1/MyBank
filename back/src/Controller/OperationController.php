@@ -33,7 +33,12 @@ class OperationController extends AbstractController
             return $this->json(['error' => 'Missing fields'], 400);
         }
 
-        $category = $categoryRepo->find($data['categoryId']);
+        $date = \DateTime::createFromFormat('Y-m-d', $data['date']);
+        if (!$date || $date->format('Y-m-d') !== $data['date']) {
+            return $this->json(['error' => 'Invalid date format, expected Y-m-d'], 400);
+        }
+
+        $category = $categoryRepo->findOneBy(['id' => $data['categoryId'], 'user' => $this->getUser()]);
         if (!$category) {
             return $this->json(['error' => 'Category not found'], 404);
         }
@@ -41,7 +46,7 @@ class OperationController extends AbstractController
         $operation = new Operation();
         $operation->setLabel($data['label']);
         $operation->setAmount($data['amount']);
-        $operation->setDate(new \DateTime($data['date']));
+        $operation->setDate($date);
         $operation->setUser($this->getUser());
         $operation->setCategory($category);
 
@@ -71,10 +76,14 @@ class OperationController extends AbstractController
             $operation->setAmount($data['amount']);
         }
         if (isset($data['date'])) {
-            $operation->setDate(new \DateTime($data['date']));
+            $date = \DateTime::createFromFormat('Y-m-d', $data['date']);
+            if (!$date || $date->format('Y-m-d') !== $data['date']) {
+                return $this->json(['error' => 'Invalid date format, expected Y-m-d'], 400);
+            }
+            $operation->setDate($date);
         }
         if (isset($data['categoryId'])) {
-            $category = $categoryRepo->find($data['categoryId']);
+            $category = $categoryRepo->findOneBy(['id' => $data['categoryId'], 'user' => $this->getUser()]);
             if (!$category) {
                 return $this->json(['error' => 'Category not found'], 404);
             }

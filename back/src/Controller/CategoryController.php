@@ -15,7 +15,7 @@ class CategoryController extends AbstractController
     #[Route('/api/categories', name: 'api_categories_list', methods: ['GET'])]
     public function list(CategoryRepository $repo): JsonResponse
     {
-        $categories = $repo->findAll();
+        $categories = $repo->findBy(['user' => $this->getUser()]);
 
         return $this->json(array_map(fn($c) => [
             'id'    => $c->getId(),
@@ -34,6 +34,7 @@ class CategoryController extends AbstractController
 
         $category = new Category();
         $category->setTitle($data['title']);
+        $category->setUser($this->getUser());
 
         $em->persist($category);
         $em->flush();
@@ -44,9 +45,35 @@ class CategoryController extends AbstractController
         ], 201);
     }
 
+    #[Route('/api/categories/{id}', name: 'api_categories_update', methods: ['PUT'])]
+    public function update(Category $category, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        if ($category->getUser() !== $this->getUser()) {
+            return $this->json(['error' => 'Access denied'], 403);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        if (empty($data['title'])) {
+            return $this->json(['error' => 'Title is required'], 400);
+        }
+
+        $category->setTitle($data['title']);
+        $em->flush();
+
+        return $this->json([
+            'id'    => $category->getId(),
+            'title' => $category->getTitle(),
+        ]);
+    }
+
     #[Route('/api/categories/{id}', name: 'api_categories_delete', methods: ['DELETE'])]
     public function delete(Category $category, EntityManagerInterface $em): JsonResponse
     {
+        if ($category->getUser() !== $this->getUser()) {
+            return $this->json(['error' => 'Access denied'], 403);
+        }
+
         $em->remove($category);
         $em->flush();
 
