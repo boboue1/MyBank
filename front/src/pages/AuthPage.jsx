@@ -15,7 +15,8 @@ export default function AuthPage() {
     firstName: '',
     lastName: '',
   })
-  const [error, setError] = useState(null)
+  const [error, setError]         = useState(null)
+  const [submitting, setSubmitting] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
 
@@ -36,6 +37,7 @@ export default function AuthPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(null)
+    setSubmitting(true)
 
     try {
       if (tab === 'login') {
@@ -44,9 +46,11 @@ export default function AuthPage() {
         navigate('/dashboard')
       } else {
         if (!passwordValid) {
+          setSubmitting(false)
           return setError('Le mot de passe doit contenir min. 8 caractères, 1 majuscule et 1 chiffre.')
         }
         if (!confirmMatch) {
+          setSubmitting(false)
           return setError('Les mots de passe ne correspondent pas.')
         }
         await registerApi(form.email, form.password, form.firstName, form.lastName)
@@ -57,6 +61,7 @@ export default function AuthPage() {
     } catch (err) {
       const msg = err.response?.data?.error
       setError(msg || (tab === 'login' ? 'Email ou mot de passe incorrect.' : "Erreur lors de l'inscription."))
+      setSubmitting(false)
     }
   }
 
@@ -167,8 +172,8 @@ export default function AuthPage() {
             {error && <p className="auth-error">{error}</p>}
           </form>
 
-          <button className="auth-cta" onClick={handleSubmit}>
-            {tab === 'login' ? 'Continue →' : 'Create Account →'}
+          <button className="auth-cta" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? 'Chargement…' : (tab === 'login' ? 'Continue →' : 'Create Account →')}
           </button>
 
           {tab === 'login' && (

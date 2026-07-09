@@ -6,6 +6,7 @@ import { getCategories } from '../api/categories'
 import { useIsMobile } from '../hooks/useIsMobile'
 import OperationModal from '../components/OperationModal'
 import Navbar from '../components/Navbar'
+import Spinner from '../components/Spinner'
 import './OperationListPage.css'
 
 const PAGE_SIZE = 10
@@ -35,10 +36,14 @@ export default function OperationListPage() {
   const [page, setPage]               = useState(1)
   const [showModal, setShowModal]     = useState(false)
   const [editing, setEditing]         = useState(null)
+  const [loading, setLoading]         = useState(true)
 
   useEffect(() => {
-    getOperations().then((r) => setOperations(r.data))
-    getCategories().then((r) => setCategories(r.data))
+    Promise.all([getOperations(), getCategories()]).then(([opsRes, catsRes]) => {
+      setOperations(opsRes.data)
+      setCategories(catsRes.data)
+      setLoading(false)
+    })
   }, [])
 
   /* ── Filtering ── */
@@ -152,81 +157,62 @@ export default function OperationListPage() {
             </div>
           )}
 
-          {/* Table / list */}
-          <div className="op-table">
+          {/* Table / list + pagination */}
+          {loading ? <Spinner /> : (
+            <>
+              <div className="op-table">
+                <div className="op-table-head desktop-only">
+                  <span>Label</span>
+                  <span>Amount</span>
+                  <span>Date</span>
+                  <span>Cat.</span>
+                  <span>···</span>
+                </div>
 
-            {/* Desktop header */}
-            <div className="op-table-head desktop-only">
-              <span>Label</span>
-              <span>Amount</span>
-              <span>Date</span>
-              <span>Cat.</span>
-              <span>···</span>
-            </div>
+                {pageItems.length === 0 ? (
+                  <p className="op-empty">Aucune opération trouvée.</p>
+                ) : (
+                  pageItems.map((op) => {
+                    const amount = parseFloat(op.amount)
+                    return (
+                      <div key={op.id} className="op-table-row" onClick={() => isMobile && handleEdit(op)}>
+                        <span className="op-label desktop-only">{op.label}</span>
+                        <span className={`op-amount desktop-only ${amount < 0 ? 'negative' : 'positive'}`}>
+                          {formatAmount(op.amount)}
+                        </span>
+                        <span className="op-date desktop-only">{formatDate(op.date)}</span>
+                        <span className="op-cat desktop-only">{op.category.title}</span>
 
-            {pageItems.length === 0 ? (
-              <p className="op-empty">Aucune opération trouvée.</p>
-            ) : (
-              pageItems.map((op) => {
-                const amount = parseFloat(op.amount)
-                return (
-                  <div key={op.id} className="op-table-row" onClick={() => isMobile && handleEdit(op)}>
-                    {/* Desktop columns */}
-                    <span className="op-label desktop-only">{op.label}</span>
-                    <span className={`op-amount desktop-only ${amount < 0 ? 'negative' : 'positive'}`}>
-                      {formatAmount(op.amount)}
+                        <div className="op-card-content mobile-only">
+                          <span className="op-card-label">{op.label}</span>
+                          <span className={`op-card-meta ${amount < 0 ? 'negative' : 'positive'}`}>
+                            {op.category.title} · {formatDate(op.date)} · {formatAmount(op.amount)}
+                          </span>
+                        </div>
+
+                        <div className="op-row-actions desktop-only">
+                          <button className="op-row-btn" onClick={(e) => { e.stopPropagation(); handleEdit(op) }} title="Modifier">✎</button>
+                          <button className="op-row-btn delete" onClick={(e) => { e.stopPropagation(); handleDelete(op.id) }} title="Supprimer">×</button>
+                        </div>
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="op-pagination">
+                  <button className="op-page-btn" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={currentPage === 1}>←</button>
+                  {pageNumbers.map((n, i) => (
+                    <span key={n}>
+                      {i > 0 && <span className="op-page-sep">·</span>}
+                      <button className={`op-page-btn${currentPage === n ? ' active' : ''}`} onClick={() => setPage(n)}>{n}</button>
                     </span>
-                    <span className="op-date desktop-only">{formatDate(op.date)}</span>
-                    <span className="op-cat desktop-only">{op.category.title}</span>
-
-                    {/* Mobile card layout */}
-                    <div className="op-card-content mobile-only">
-                      <span className="op-card-label">{op.label}</span>
-                      <span className={`op-card-meta ${amount < 0 ? 'negative' : 'positive'}`}>
-                        {op.category.title} · {formatDate(op.date)} · {formatAmount(op.amount)}
-                      </span>
-                    </div>
-
-                    {/* Actions (desktop only — mobile uses row tap) */}
-                    <div className="op-row-actions desktop-only">
-                      <button className="op-row-btn" onClick={(e) => { e.stopPropagation(); handleEdit(op) }} title="Modifier">✎</button>
-                      <button className="op-row-btn delete" onClick={(e) => { e.stopPropagation(); handleDelete(op.id) }} title="Supprimer">×</button>
-                    </div>
-                  </div>
-                )
-              })
-            )}
-          </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="op-pagination">
-              <button
-                className="op-page-btn"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-              >
-                ←
-              </button>
-              {pageNumbers.map((n, i) => (
-                <span key={n}>
-                  {i > 0 && <span className="op-page-sep">·</span>}
-                  <button
-                    className={`op-page-btn${currentPage === n ? ' active' : ''}`}
-                    onClick={() => setPage(n)}
-                  >
-                    {n}
-                  </button>
-                </span>
-              ))}
-              <button
-                className="op-page-btn"
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-              >
-                →
-              </button>
-            </div>
+                  ))}
+                  <button className="op-page-btn" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>→</button>
+                </div>
+              )}
+            </>
           )}
 
         </main>

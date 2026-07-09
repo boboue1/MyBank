@@ -8,6 +8,7 @@ import OperationModal from '../components/OperationModal'
 import CategoryManager from '../components/CategoryManager'
 import Navbar from '../components/Navbar'
 import MobileMenu from '../components/MobileMenu'
+import Spinner from '../components/Spinner'
 import './DashboardPage.css'
 
 export default function DashboardPage() {
@@ -18,10 +19,14 @@ export default function DashboardPage() {
   const [categories, setCategories] = useState([])
   const [showModal, setShowModal]   = useState(false)
   const [menuOpen, setMenuOpen]     = useState(false)
+  const [loading, setLoading]       = useState(true)
 
   useEffect(() => {
-    getOperations().then((r) => setOperations(r.data))
-    getCategories().then((r) => setCategories(r.data))
+    Promise.all([getOperations(), getCategories()]).then(([opsRes, catsRes]) => {
+      setOperations(opsRes.data)
+      setCategories(catsRes.data)
+      setLoading(false)
+    })
   }, [])
 
   /* ── Stats ── */
@@ -76,95 +81,99 @@ export default function DashboardPage() {
 
         {/* ── Main ── */}
         <main className="dash-main">
-          {/* Stat cards */}
-          <div className="stat-cards">
-            <div className="stat-card">
-              <p className="label">Total Balance</p>
-              <p className="value">{totalBalance.toFixed(2)} €</p>
-              <p className="sub">Toutes opérations</p>
-            </div>
-            <div className="stat-card">
-              <p className="label">This Month</p>
-              <p className="value">{thisMonth.toFixed(2)} €</p>
-              <p className="sub">{now.toLocaleString('fr-FR', { month: 'long', year: 'numeric' })}</p>
-            </div>
-            <div className="stat-card">
-              <p className="label">Operations</p>
-              <p className="value">{operations.length}</p>
-              <p className="sub">Au total</p>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="dash-content">
-            {/* Chart */}
-            <div className="panel-chart">
-              <h3>Dépenses / catégorie</h3>
-              {byCategory.length === 0 ? (
-                <p className="chart-empty">Aucune donnée</p>
-              ) : (
-                <div className="chart-bars">
-                  {byCategory.map((c) => (
-                    <div key={c.title} className="chart-bar-row">
-                      <span className="chart-bar-label">{c.title}</span>
-                      <div className="chart-bar-track">
-                        <div
-                          className="chart-bar-fill"
-                          style={{ width: `${(Math.abs(c.total) / maxAmount) * 100}%` }}
-                        />
-                      </div>
-                      <span className="chart-bar-amount">{c.total.toFixed(0)} €</span>
-                    </div>
-                  ))}
+          {loading ? <Spinner /> : (
+            <>
+              {/* Stat cards */}
+              <div className="stat-cards">
+                <div className="stat-card">
+                  <p className="label">Total Balance</p>
+                  <p className="value">{totalBalance.toFixed(2)} €</p>
+                  <p className="sub">Toutes opérations</p>
                 </div>
-              )}
-            </div>
+                <div className="stat-card">
+                  <p className="label">This Month</p>
+                  <p className="value">{thisMonth.toFixed(2)} €</p>
+                  <p className="sub">{now.toLocaleString('fr-FR', { month: 'long', year: 'numeric' })}</p>
+                </div>
+                <div className="stat-card">
+                  <p className="label">Operations</p>
+                  <p className="value">{operations.length}</p>
+                  <p className="sub">Au total</p>
+                </div>
+              </div>
 
-            {/* Recent ops */}
-            <div className="panel-ops">
-              <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                5 dernières opérations
-                <button
-                  onClick={() => navigate('/operations')}
-                  style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, fontFamily: 'var(--font-main)' }}
-                >
-                  Voir tout →
-                </button>
-              </h3>
-              {recentOps.length === 0 ? (
-                <p className="ops-empty">Aucune opération</p>
-              ) : (
-                <ul className="ops-list">
-                  {recentOps.map((o) => (
-                    <li key={o.id} className="op-item">
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p className="op-label">{o.label}</p>
-                        <p className="op-cat">{o.category.title}</p>
-                      </div>
-                      <span className="op-date">{new Date(o.date).toLocaleDateString('fr-FR')}</span>
-                      <span className="op-amount">{parseFloat(o.amount).toFixed(2)} €</span>
-                      <button
-                        onClick={() => handleDelete(o.id)}
-                        style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: '1rem' }}
-                        title="Supprimer"
-                      >
-                        ✕
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
+              {/* Content */}
+              <div className="dash-content">
+                {/* Chart */}
+                <div className="panel-chart">
+                  <h3>Dépenses / catégorie</h3>
+                  {byCategory.length === 0 ? (
+                    <p className="chart-empty">Aucune donnée</p>
+                  ) : (
+                    <div className="chart-bars">
+                      {byCategory.map((c) => (
+                        <div key={c.title} className="chart-bar-row">
+                          <span className="chart-bar-label">{c.title}</span>
+                          <div className="chart-bar-track">
+                            <div
+                              className="chart-bar-fill"
+                              style={{ width: `${(Math.abs(c.total) / maxAmount) * 100}%` }}
+                            />
+                          </div>
+                          <span className="chart-bar-amount">{c.total.toFixed(0)} €</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
-          {/* CTA */}
-          <button
-            className="dash-cta"
-            onClick={() => isMobile ? navigate('/operations/new') : setShowModal(true)}
-          >
-            <span className="cta-full">+ ADD OPERATION</span>
-            <span className="cta-short">+ ADD</span>
-          </button>
+                {/* Recent ops */}
+                <div className="panel-ops">
+                  <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    5 dernières opérations
+                    <button
+                      onClick={() => navigate('/operations')}
+                      style={{ background: 'none', border: 'none', color: 'var(--color-accent)', cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, fontFamily: 'var(--font-main)' }}
+                    >
+                      Voir tout →
+                    </button>
+                  </h3>
+                  {recentOps.length === 0 ? (
+                    <p className="ops-empty">Aucune opération</p>
+                  ) : (
+                    <ul className="ops-list">
+                      {recentOps.map((o) => (
+                        <li key={o.id} className="op-item">
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p className="op-label">{o.label}</p>
+                            <p className="op-cat">{o.category.title}</p>
+                          </div>
+                          <span className="op-date">{new Date(o.date).toLocaleDateString('fr-FR')}</span>
+                          <span className="op-amount">{parseFloat(o.amount).toFixed(2)} €</span>
+                          <button
+                            onClick={() => handleDelete(o.id)}
+                            style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: '1rem' }}
+                            title="Supprimer"
+                          >
+                            ✕
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              {/* CTA */}
+              <button
+                className="dash-cta"
+                onClick={() => isMobile ? navigate('/operations/new') : setShowModal(true)}
+              >
+                <span className="cta-full">+ ADD OPERATION</span>
+                <span className="cta-short">+ ADD</span>
+              </button>
+            </>
+          )}
         </main>
       </div>
 

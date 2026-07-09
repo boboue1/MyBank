@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../api/categories'
+import Spinner from '../components/Spinner'
 import './CategoryPage.css'
 
 export default function CategoryPage() {
@@ -9,9 +10,13 @@ export default function CategoryPage() {
   const [newTitle, setNewTitle]     = useState('')
   const [editingId, setEditingId]   = useState(null)
   const [editTitle, setEditTitle]   = useState('')
+  const [loading, setLoading]       = useState(true)
 
   useEffect(() => {
-    getCategories().then((r) => setCategories(r.data))
+    getCategories().then((r) => {
+      setCategories(r.data)
+      setLoading(false)
+    })
   }, [])
 
   const handleAdd = async () => {
@@ -58,28 +63,30 @@ export default function CategoryPage() {
         <button className="cat-page-add-btn" onClick={handleAdd}>+ Ajouter</button>
       </div>
 
-      <ul className="cat-page-list">
-        {categories.map((cat) => (
-          <li key={cat.id} className="cat-page-item">
-            {editingId === cat.id ? (
-              <input
-                className="cat-page-edit-input"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && confirmEdit(cat.id)}
-                onBlur={() => confirmEdit(cat.id)}
-                autoFocus
-              />
-            ) : (
-              <span className="cat-page-name">{cat.title}</span>
-            )}
-            <div className="cat-page-actions">
-              <button className="cat-page-btn" onClick={() => startEdit(cat)}>✎</button>
-              <button className="cat-page-btn" onClick={() => handleDelete(cat.id)}>×</button>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {loading ? <Spinner /> : (
+        <ul className="cat-page-list">
+          {categories.map((cat) => (
+            <li key={cat.id} className="cat-page-item">
+              {editingId === cat.id ? (
+                <input
+                  className="cat-page-edit-input"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && confirmEdit(cat.id)}
+                  onBlur={() => confirmEdit(cat.id)}
+                  autoFocus
+                />
+              ) : (
+                <span className="cat-page-name">{cat.title}</span>
+              )}
+              <div className="cat-page-actions">
+                <button className="cat-page-btn" onClick={() => startEdit(cat)}>✎</button>
+                <button className="cat-page-btn" onClick={() => handleDelete(cat.id)}>×</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
