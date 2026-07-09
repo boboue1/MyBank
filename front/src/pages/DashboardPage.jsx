@@ -7,15 +7,17 @@ import { useIsMobile } from '../hooks/useIsMobile'
 import OperationModal from '../components/OperationModal'
 import CategoryManager from '../components/CategoryManager'
 import Navbar from '../components/Navbar'
+import MobileMenu from '../components/MobileMenu'
 import './DashboardPage.css'
 
 export default function DashboardPage() {
-  useAuth()
+  const { user, logout } = useAuth()
   const navigate = useNavigate()
   const isMobile = useIsMobile()
   const [operations, setOperations] = useState([])
   const [categories, setCategories] = useState([])
   const [showModal, setShowModal]   = useState(false)
+  const [menuOpen, setMenuOpen]     = useState(false)
 
   useEffect(() => {
     getOperations().then((r) => setOperations(r.data))
@@ -66,7 +68,7 @@ export default function DashboardPage() {
       <div className="dash-body">
         {/* ── Sidebar ── */}
         <aside className="dash-sidebar">
-          <div className="hamburger">
+          <div className="hamburger" onClick={() => setMenuOpen(true)}>
             <span /><span /><span />
           </div>
           <CategoryManager categories={categories} setCategories={setCategories} />
@@ -174,6 +176,14 @@ export default function DashboardPage() {
           onClose={() => setShowModal(false)}
         />
       )}
+
+      {/* ── Menu drawer ── */}
+      <MobileMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        user={user}
+        onLogout={logout}
+      />
     </div>
   )
 }

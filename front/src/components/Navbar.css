@@ -193,15 +193,22 @@
   color: var(--color-primary);
 }
 
-/* ── Mobile hamburger ── */
+/* ── Hamburger ── */
 .navbar-hamburger {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 5px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 6px;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.navbar-hamburger:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .navbar-hamburger span {
@@ -225,5 +232,6 @@
   .navbar-user-info,
   .navbar-chevron { display: none; }
 
-  .navbar-hamburger { display: flex; }
+  /* hamburger géré plus tard pour le mobile */
+  .navbar-hamburger { display: none; }
 }
