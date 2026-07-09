@@ -193,9 +193,9 @@
   color: var(--color-primary);
 }
 
-/* ── Hamburger ── */
+/* ── Hamburger — mobile only ── */
 .navbar-hamburger {
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 5px;
   background: none;
@@ -232,6 +232,5 @@
   .navbar-user-info,
   .navbar-chevron { display: none; }
 
-  /* hamburger géré plus tard pour le mobile */
-  .navbar-hamburger { display: none; }
+  .navbar-hamburger { display: flex; }
 }

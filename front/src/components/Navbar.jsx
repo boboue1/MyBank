@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import MobileMenu from './MobileMenu'
 import './Navbar.css'
 
 const NAV_LINKS = [
@@ -10,11 +11,12 @@ const NAV_LINKS = [
 ]
 
 export default function Navbar() {
-  const { user, logout }       = useAuth()
-  const navigate                = useNavigate()
-  const { pathname }            = useLocation()
-  const [dropOpen, setDropOpen] = useState(false)
-  const dropRef                 = useRef(null)
+  const { user, logout }         = useAuth()
+  const navigate                  = useNavigate()
+  const { pathname }              = useLocation()
+  const [dropOpen, setDropOpen]   = useState(false)
+  const [menuOpen, setMenuOpen]   = useState(false)
+  const dropRef                   = useRef(null)
 
   useEffect(() => {
     const close = (e) => {
@@ -27,7 +29,8 @@ export default function Navbar() {
   const initials = user ? user.firstName[0].toUpperCase() : '?'
 
   return (
-    <nav className="navbar">
+    <>
+      <nav className="navbar">
 
         {/* Logo */}
         <div className="navbar-logo" onClick={() => navigate('/dashboard')}>
@@ -42,7 +45,7 @@ export default function Navbar() {
           </span>
         </div>
 
-        {/* Liens centrés */}
+        {/* Liens centrés — desktop */}
         <div className="navbar-links">
           {NAV_LINKS.map(({ label, path }) => (
             <button
@@ -57,7 +60,7 @@ export default function Navbar() {
 
         {/* Droite */}
         <div className="navbar-right">
-          {/* Cloche */}
+          {/* Cloche — desktop */}
           <button className="navbar-bell" aria-label="Notifications">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path
@@ -73,7 +76,7 @@ export default function Navbar() {
             </svg>
           </button>
 
-          {/* Utilisateur + dropdown desktop */}
+          {/* Utilisateur + dropdown — desktop */}
           <div className="navbar-user" ref={dropRef} onClick={() => setDropOpen((v) => !v)}>
             <div className="navbar-avatar">{initials}</div>
             <div className="navbar-user-info">
@@ -94,8 +97,21 @@ export default function Navbar() {
             )}
           </div>
 
+          {/* Hamburger — mobile uniquement */}
+          <button className="navbar-hamburger" onClick={() => setMenuOpen(true)}>
+            <span /><span /><span />
+          </button>
         </div>
 
-    </nav>
+      </nav>
+
+      {/* Menu drawer mobile */}
+      <MobileMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        user={user}
+        onLogout={logout}
+      />
+    </>
   )
 }
