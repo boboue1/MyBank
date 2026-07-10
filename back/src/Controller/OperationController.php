@@ -33,6 +33,14 @@ class OperationController extends AbstractController
             return $this->json(['error' => 'Missing fields'], 400);
         }
 
+        if (strlen((string) $data['label']) > 255) {
+            return $this->json(['error' => 'Label too long'], 400);
+        }
+
+        if (!is_numeric($data['amount']) || (float) $data['amount'] === 0.0 || abs((float) $data['amount']) > 1_000_000) {
+            return $this->json(['error' => 'Invalid amount'], 400);
+        }
+
         $date = \DateTime::createFromFormat('Y-m-d', $data['date']);
         if (!$date || $date->format('Y-m-d') !== $data['date']) {
             return $this->json(['error' => 'Invalid date format, expected Y-m-d'], 400);
@@ -45,7 +53,7 @@ class OperationController extends AbstractController
 
         $operation = new Operation();
         $operation->setLabel($data['label']);
-        $operation->setAmount($data['amount']);
+        $operation->setAmount((float) $data['amount']);
         $operation->setDate($date);
         $operation->setUser($this->getUser());
         $operation->setCategory($category);
@@ -70,10 +78,16 @@ class OperationController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (isset($data['label'])) {
+            if (strlen((string) $data['label']) > 255) {
+                return $this->json(['error' => 'Label too long'], 400);
+            }
             $operation->setLabel($data['label']);
         }
         if (isset($data['amount'])) {
-            $operation->setAmount($data['amount']);
+            if (!is_numeric($data['amount']) || (float) $data['amount'] === 0.0 || abs((float) $data['amount']) > 1_000_000) {
+                return $this->json(['error' => 'Invalid amount'], 400);
+            }
+            $operation->setAmount((float) $data['amount']);
         }
         if (isset($data['date'])) {
             $date = \DateTime::createFromFormat('Y-m-d', $data['date']);

@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 
 class RegisterController extends AbstractController
@@ -18,16 +19,30 @@ class RegisterController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $em,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        RateLimiterFactory $apiRegistrationLimiter
     ): JsonResponse {
+        $limiter = $apiRegistrationLimiter->create($request->getClientIp());
+        if (!$limiter->consume(1)->isAccepted()) {
+            return $this->json(['error' => 'Too many registration attempts'], 429);
+        }
+
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['email'], $data['password'], $data['firstName'], $data['lastName'])) {
             return $this->json(['error' => 'Missing fields'], 400);
         }
 
+        if (strlen($data['email']) > 180 || strlen($data['firstName']) > 100 || strlen($data['lastName']) > 100) {
+            return $this->json(['error' => 'Field too long'], 400);
+        }
+
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             return $this->json(['error' => 'Invalid email format'], 400);
+        }
+
+        if (strlen($data['password']) < 8 || !preg_match('/[A-Z]/', $data['password']) || !preg_match('/[0-9]/', $data['password'])) {
+            return $this->json(['error' => 'Password must be at least 8 characters, include one uppercase letter and one digit'], 400);
         }
 
         if ($userRepository->findOneBy(['email' => $data['email']])) {

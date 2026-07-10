@@ -32,6 +32,10 @@ class CategoryController extends AbstractController
             return $this->json(['error' => 'Title is required'], 400);
         }
 
+        if (strlen($data['title']) > 100) {
+            return $this->json(['error' => 'Title too long'], 400);
+        }
+
         $category = new Category();
         $category->setTitle($data['title']);
         $category->setUser($this->getUser());
@@ -56,6 +60,10 @@ class CategoryController extends AbstractController
 
         if (empty($data['title'])) {
             return $this->json(['error' => 'Title is required'], 400);
+        }
+
+        if (strlen($data['title']) > 100) {
+            return $this->json(['error' => 'Title too long'], 400);
         }
 
         $category->setTitle($data['title']);
