@@ -8,7 +8,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY composer*.json ./
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-autoloader
+
 COPY . .
 RUN composer dump-autoload --optimize
 
