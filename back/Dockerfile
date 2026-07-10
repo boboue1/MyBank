@@ -13,6 +13,7 @@ COPY composer.json composer.lock symfony.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
 
 COPY . .
+RUN echo "APP_ENV=prod" > .env
 RUN composer dump-autoload --optimize --classmap-authoritative
 
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
