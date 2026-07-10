@@ -7,8 +7,10 @@
 
     WORKDIR /var/www/html
 
+    ENV COMPOSER_ALLOW_SUPERUSER=1
+
     COPY . .
-    RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+    RUN composer install --no-dev --optimize-autoloader --no-interaction
     
     COPY docker/nginx.conf /etc/nginx/http.d/default.conf
     COPY docker/supervisord.conf /etc/supervisord.conf
