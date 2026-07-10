@@ -26,6 +26,10 @@ class RegisterController extends AbstractController
             return $this->json(['error' => 'Missing fields'], 400);
         }
 
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            return $this->json(['error' => 'Invalid email format'], 400);
+        }
+
         if ($userRepository->findOneBy(['email' => $data['email']])) {
             return $this->json(['error' => 'Email already in use'], 409);
         }
