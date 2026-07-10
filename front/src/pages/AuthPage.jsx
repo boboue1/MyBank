@@ -41,8 +41,8 @@ export default function AuthPage() {
 
     try {
       if (tab === 'login') {
-        const res = await loginApi(form.email, form.password)
-        await login(res.data.token)
+        await loginApi(form.email, form.password)
+        await login()
         navigate('/dashboard')
       } else {
         if (!passwordValid) {
@@ -54,8 +54,8 @@ export default function AuthPage() {
           return setError('Les mots de passe ne correspondent pas.')
         }
         await registerApi(form.email, form.password, form.firstName, form.lastName)
-        const res = await loginApi(form.email, form.password)
-        await login(res.data.token)
+        await loginApi(form.email, form.password)
+        await login()
         navigate('/dashboard')
       }
     } catch (err) {

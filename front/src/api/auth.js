@@ -7,3 +7,5 @@ export const register = (email, password, firstName, lastName) =>
   client.post('/register', { email, password, firstName, lastName })
 
 export const me = () => client.get('/me')
+
+export const logout = () => client.post('/logout')
