@@ -75,18 +75,25 @@ export default function OperationModal({ categories, onSave, onClose, initial = 
               onChange={handleChange}
             />
           </div>
-          <select name="categoryId" value={form.categoryId} onChange={handleChange}>
-            <option value="">Category ▾</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>{c.title}</option>
-            ))}
-          </select>
+          {categories.length === 0 ? (
+            <p className="modal-no-category">
+              Aucune catégorie disponible —{' '}
+              <a href="/categories">créez-en une d'abord</a>.
+            </p>
+          ) : (
+            <select name="categoryId" value={form.categoryId} onChange={handleChange}>
+              <option value="">Catégorie ▾</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.title}</option>
+              ))}
+            </select>
+          )}
           {error && <p className="modal-error">{error}</p>}
         </div>
 
         <div className="modal-actions">
           <button className="btn-cancel" onClick={onClose}>Cancel</button>
-          <button className="btn-submit" onClick={handleSubmit}>Save →</button>
+          <button className="btn-submit" onClick={handleSubmit} disabled={categories.length === 0}>Save →</button>
         </div>
 
       </div>
