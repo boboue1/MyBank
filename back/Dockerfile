@@ -7,11 +7,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY composer*.json ./
-RUN composer install --no-dev --optimize-autoloader --no-autoloader
-
 COPY . .
-RUN composer dump-autoload --optimize
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord.conf /etc/supervisord.conf
