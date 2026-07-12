@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
   const login = () => me().then((res) => setUser(res.data))
 
   const logout = async () => {
-    try { await apiLogout() } catch {}
+    try { await apiLogout() } catch { /* ignore */ }
     setUser(null)
   }
 
@@ -28,4 +28,5 @@ export function AuthProvider({ children }) {
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext)

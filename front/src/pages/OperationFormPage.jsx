@@ -12,23 +12,16 @@ export default function OperationFormPage() {
   const existing  = location.state?.operation ?? null
 
   const [categories, setCategories] = useState([])
-  const [form, setForm]             = useState(EMPTY)
+  const [form, setForm]             = useState(() =>
+    existing
+      ? { label: existing.label, amount: existing.amount, date: existing.date, categoryId: existing.category.id }
+      : EMPTY
+  )
   const [error, setError]           = useState(null)
 
   useEffect(() => {
     getCategories().then((r) => setCategories(r.data))
   }, [])
-
-  useEffect(() => {
-    if (existing) {
-      setForm({
-        label:      existing.label,
-        amount:     existing.amount,
-        date:       existing.date,
-        categoryId: existing.category.id,
-      })
-    }
-  }, [existing])
 
   const goBack = () => navigate(location.state?.from ?? '/dashboard')
 
