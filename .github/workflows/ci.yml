@@ -19,12 +19,24 @@ jobs:
           php-version: '8.2'
           extensions: pdo, pdo_sqlite, zip, openssl
 
+      - name: Create .env for CI
+        working-directory: back
+        run: |
+          echo "APP_ENV=test" > .env
+          echo "APP_SECRET=ci_secret_not_used_in_prod" >> .env
+          echo "JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem" >> .env
+          echo "JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem" >> .env
+          echo "JWT_PASSPHRASE=ci_passphrase" >> .env
+          echo "CORS_ALLOW_ORIGIN=http://localhost" >> .env
+
       - name: Install dependencies
         working-directory: back
         run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
 
+      - name: Generate JWT keys
+        working-directory: back
+        run: php bin/console lexik:jwt:generate-keypair -n
+
       - name: Run tests
         working-directory: back
         run: php bin/phpunit
-        env:
-          APP_ENV: test
