@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: back
-        run: composer install --no-interaction --no-progress --prefer-dist
+        run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
 
       - name: Run tests
         working-directory: back
