@@ -11,6 +11,9 @@ fi
 mkdir -p var/cache var/log
 
 php bin/console cache:clear --no-debug --no-warmup
+
+chown -R www-data:www-data var/ config/jwt/
+
 php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
 
 exec /usr/bin/supervisord -c /etc/supervisord.conf
