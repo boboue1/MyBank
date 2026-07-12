@@ -35,19 +35,20 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function login(string $email, string $password = 'Password1'): string
     {
-        $response = $this->request('POST', '/api/login', [
+        $this->request('POST', '/api/login', [
             'email'    => $email,
             'password' => $password,
         ]);
 
-        return json_decode($response->getContent(), true)['token'];
+        $cookie = $this->client->getCookieJar()->get('BEARER');
+        return $cookie ? $cookie->getValue() : '';
     }
 
     protected function request(
         string $method,
         string $uri,
         array $data = [],
-        string $token = null
+        ?string $token = null
     ): Response {
         $headers = ['CONTENT_TYPE' => 'application/json', 'HTTP_ACCEPT' => 'application/json'];
 

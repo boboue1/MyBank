@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Attribute\Route;
 
 class RegisterController extends AbstractController
@@ -20,13 +19,7 @@ class RegisterController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $em,
         UserRepository $userRepository,
-        RateLimiterFactory $apiRegistrationLimiter
     ): JsonResponse {
-        $limiter = $apiRegistrationLimiter->create($request->getClientIp());
-        if (!$limiter->consume(1)->isAccepted()) {
-            return $this->json(['error' => 'Too many registration attempts'], 429);
-        }
-
         $data = json_decode($request->getContent(), true);
 
         if (!isset($data['email'], $data['password'], $data['firstName'], $data['lastName'])) {

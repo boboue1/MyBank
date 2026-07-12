@@ -7,13 +7,14 @@ class AuthTest extends ApiTestCase
     public function testLoginReturnsToken(): void
     {
         $this->register('alice@test.com');
-        $response = $this->request('POST', '/api/login', [
+        $this->request('POST', '/api/login', [
             'email'    => 'alice@test.com',
             'password' => 'Password1',
         ]);
 
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertArrayHasKey('token', $this->json($response));
+        $cookie = $this->client->getCookieJar()->get('BEARER');
+        $this->assertNotNull($cookie, 'BEARER cookie should be set after login');
+        $this->assertNotEmpty($cookie->getValue());
     }
 
     public function testLoginWrongPasswordReturns401(): void
