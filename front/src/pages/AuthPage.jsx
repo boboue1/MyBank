@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { login as loginApi, register as registerApi } from '../api/auth'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import './AuthPage.css'
 
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d).{8,}$/

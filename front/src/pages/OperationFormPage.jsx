@@ -14,7 +14,7 @@ export default function OperationFormPage() {
   const [categories, setCategories] = useState([])
   const [form, setForm]             = useState(() =>
     existing
-      ? { label: existing.label, amount: existing.amount, date: existing.date, categoryId: existing.category.id }
+      ? { label: existing.label, amount: existing.amount, date: existing.date, categoryId: existing.category?.id ?? '' }
       : EMPTY
   )
   const [error, setError]           = useState(null)

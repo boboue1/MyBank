@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/useAuth'
 import { getOperations, createOperation, deleteOperation } from '../api/operations'
 import { getCategories } from '../api/categories'
 import { useIsMobile } from '../hooks/useIsMobile'
