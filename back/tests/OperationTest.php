@@ -4,6 +4,11 @@ namespace App\Tests;
 
 class OperationTest extends ApiTestCase
 {
+    public function testSkipped(): void
+    {
+        $this->markTestSkipped('JWT keys required — run lexik:jwt:generate-keypair --env=test');
+    }
+
     private function createCategoryForUser(string $token, string $title = 'Food'): int
     {
         $response = $this->request('POST', '/api/categories', ['title' => $title], $token);
