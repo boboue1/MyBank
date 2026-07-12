@@ -52,6 +52,13 @@
 
 body {
   margin: 0;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+}
+
+html {
+  overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 #root {
