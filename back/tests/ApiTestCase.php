@@ -35,13 +35,12 @@ abstract class ApiTestCase extends WebTestCase
 
     protected function login(string $email, string $password = 'Password1'): string
     {
-        $this->request('POST', '/api/login', [
+        $response = $this->request('POST', '/api/login', [
             'email'    => $email,
             'password' => $password,
         ]);
 
-        $cookie = $this->client->getCookieJar()->get('BEARER');
-        return $cookie ? $cookie->getValue() : '';
+        return $this->json($response)['token'] ?? '';
     }
 
     protected function request(

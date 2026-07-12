@@ -24,6 +24,10 @@ jobs:
         working-directory: back
         run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
 
+      - name: Copy .env file
+        working-directory: back
+        run: cp .env.test .env
+        
       - name: Generate JWT keys
         working-directory: back
         env:

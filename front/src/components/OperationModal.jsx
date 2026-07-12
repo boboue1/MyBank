@@ -1,24 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './OperationModal.css'
 
 const EMPTY_FORM = { label: '', amount: '', date: '', categoryId: '' }
 
 export default function OperationModal({ categories, onSave, onClose, initial = null }) {
-  const [form, setForm] = useState(EMPTY_FORM)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
+  // On initialise le state directement avec les bonnes valeurs au premier rendu
+  const [form, setForm] = useState(() => {
     if (initial) {
-      setForm({
-        label:      initial.label,
-        amount:     initial.amount,
-        date:       initial.date,
-        categoryId: initial.category.id,
-      })
-    } else {
-      setForm(EMPTY_FORM)
+      return {
+        label:      initial.label || '',
+        amount:     initial.amount || '',
+        date:       initial.date || '',
+        categoryId: initial.category?.id || '',
+      }
     }
-  }, [initial])
+    return EMPTY_FORM
+  })
+  
+  const [error, setError] = useState(null)
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
